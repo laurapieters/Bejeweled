@@ -1,0 +1,14 @@
+body {
+    text-align: center;
+    background-color: #281a2b;
+    margin-top: 40px;
+}
+
+* {
+    outline: none;
+}
+
+img.jewel {
+    width: 60px;
+    height: 60px;
+}
