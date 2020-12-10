@@ -11,4 +11,11 @@ body {
 img.jewel {
     width: 60px;
     height: 60px;
+    box-sizing: border-box;
+}
+
+img.jewel:hover {
+    box-sizing: border-box;
+    border: 1px solid white;
+    border-radius: 5px;
 }
