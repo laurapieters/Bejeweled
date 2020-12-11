@@ -49,6 +49,7 @@ class Grid{
 
     checkForRow(){
         let foundRows = [];
+        let foundKind = [];
 
         // check for rows
         for(let j = 0; j < 8; j++){
@@ -61,6 +62,7 @@ class Grid{
                     foundRow.push(this.jewels[i+2][j]);
                     if(!foundRows.includes(foundRow)){
                         foundRows.push(foundRow);
+                        foundKind.push('row');
                     }
                 }
             }
@@ -76,6 +78,7 @@ class Grid{
                     foundColumn.push(this.jewels[i][j+2]);
                     if(!foundRows.includes(foundColumn)) {
                         foundRows.push(foundColumn);
+                        foundKind.push('column');
                     }
                 }
             }
@@ -91,6 +94,7 @@ class Grid{
                 foundDiagonal.push(this.jewels[i+2][j+2]);
                     if(!foundRows.includes(foundDiagonal)) {
                         foundRows.push(foundDiagonal);
+                        foundKind.push('diagonal');
                     }
                 }
             }
@@ -106,7 +110,19 @@ class Grid{
                     foundDiagonal.push(this.jewels[i-2][j+2]);
                     if(!foundRows.includes(foundDiagonal)) {
                         foundRows.push(foundDiagonal);
+                        foundKind.push('backwardsDiagonal');
                     }
+                }
+            }
+        }
+
+        // remove double rows, but not >3-in-a-row
+        for(let i = 0; i < 3*foundRows.length; i++){
+            for(let j = 0; j < 3*foundRows.length; j++){
+                if(foundRows[Math.floor(i/3)][i%3].color === foundRows[Math.floor(j/3)][j%3].color
+                && foundKind[Math.floor(i/3)] !== foundKind[Math.floor(j/3)]){
+                    console.log('found double');
+                    foundRows.splice(Math.floor(i/3),1);
                 }
             }
         }
@@ -135,7 +151,7 @@ class Grid{
             this.displayAgain();
             this.clickedJewels = [];
 
-
+            // instead of while loop (does not work with setTimout)
             const removeAndFill = () => {
                 this.foundRows = this.checkForRow();
                 if(this.foundRows.length === 0){
@@ -143,7 +159,6 @@ class Grid{
                 }
                 // check for row, remove and display again
                 setTimeout(() => {
-                    // this.foundRows = this.checkForRow();
                     this.removeRows(this.foundRows);
                     this.displayAgain();
 
@@ -166,7 +181,8 @@ class Grid{
         }
     }
 
-    displayAgain(){
+    // displays the new configuration
+    displayAgain() {
         const element = document.getElementById('grid');
         element.parentNode.removeChild(element);
         const gridDiv = this.createGrid();
