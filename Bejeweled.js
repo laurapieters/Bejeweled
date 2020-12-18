@@ -13,7 +13,7 @@ function playGame(){
 class Grid{
     constructor() {
         this.jewels = this.createJewels();
-        this.foundRows = this.checkForRow();
+        this.foundRows = this.checkForRow2();
         this.clickedJewels = [];
     }
 
@@ -47,6 +47,55 @@ class Grid{
         return gridDiv;
     }
 
+    checkForRow2(){
+        let foundRows = [];
+
+        // check for rows
+        for(let j = 0; j < 8; j++){
+            let foundRow = [];
+            for(let i = 0; i < 8-1; i++) {
+                foundRow.push(this.jewels[i][j]);
+                if(this.jewels[i][j].color === this.jewels[i+1][j].color){
+                    if(i === 6){
+                        foundRow.push(this.jewels[i+1][j]);
+                        if(foundRow.length >= 3){
+                            foundRows.push(foundRow);
+                        }
+                    }
+                }else{
+                    if(foundRow.length >= 3){
+                        foundRows.push(foundRow);
+                    }
+                    foundRow = [];
+                }
+            }
+        }
+
+        // check for columns
+        for(let i = 0; i < 8; i++){
+            let foundColumn = [];
+            for(let j = 0; j < 8-1; j++) {
+                foundColumn.push(this.jewels[i][j]);
+                if(this.jewels[i][j].color === this.jewels[i][j+1].color){
+                    if(j === 6){
+                        foundColumn.push(this.jewels[i][j+1]);
+                        if(foundColumn.length >= 3){
+                            foundRows.push(foundColumn);
+                        }
+                    }
+                }else{
+                    if(foundColumn.length >= 3){
+                        foundRows.push(foundColumn);
+                    }
+                    foundColumn = [];
+                }
+
+            }
+        }
+        return foundRows;
+    }
+
+    // not in use anymore, old version
     checkForRow(){
         let foundRows = [];
         let foundKind = [];
@@ -84,39 +133,39 @@ class Grid{
             }
         }
         // check for diagonals
-        for(let j = 0; j < 8-2; j++){
-            for(let i = 0; i < 8-2; i++) {
-                if(this.jewels[i][j].color === this.jewels[i+1][j+1].color && this.jewels[i+1][j+1].color === this.jewels[i+2][j+2].color){
-                // found 3-in-a-diagonal!
-                let foundDiagonal = [];
-                foundDiagonal.push(this.jewels[i][j]);
-                foundDiagonal.push(this.jewels[i+1][j+1]);
-                foundDiagonal.push(this.jewels[i+2][j+2]);
-                    if(!foundRows.includes(foundDiagonal)) {
-                        foundRows.push(foundDiagonal);
-                        foundKind.push('diagonal');
-                    }
-                }
-            }
-        }
+        // for(let j = 0; j < 8-2; j++){
+        //     for(let i = 0; i < 8-2; i++) {
+        //         if(this.jewels[i][j].color === this.jewels[i+1][j+1].color && this.jewels[i+1][j+1].color === this.jewels[i+2][j+2].color){
+        //         // found 3-in-a-diagonal!
+        //         let foundDiagonal = [];
+        //         foundDiagonal.push(this.jewels[i][j]);
+        //         foundDiagonal.push(this.jewels[i+1][j+1]);
+        //         foundDiagonal.push(this.jewels[i+2][j+2]);
+        //             if(!foundRows.includes(foundDiagonal)) {
+        //                 foundRows.push(foundDiagonal);
+        //                 foundKind.push('diagonal');
+        //             }
+        //         }
+        //     }
+        // }
         // check for backwards diagonals
-        for(let j = 0; j < 8-2; j++){
-            for(let i = 0+2; i < 8; i++) {
-                if(this.jewels[i][j].color === this.jewels[i-1][j+1].color && this.jewels[i-1][j+1].color === this.jewels[i-2][j+2].color){
-                    // found 3-in-a-diagonal! (backwards)
-                    let foundDiagonal = [];
-                    foundDiagonal.push(this.jewels[i][j]);
-                    foundDiagonal.push(this.jewels[i-1][j+1]);
-                    foundDiagonal.push(this.jewels[i-2][j+2]);
-                    if(!foundRows.includes(foundDiagonal)) {
-                        foundRows.push(foundDiagonal);
-                        foundKind.push('backwardsDiagonal');
-                    }
-                }
-            }
-        }
+        // for(let j = 0; j < 8-2; j++){
+        //     for(let i = 0+2; i < 8; i++) {
+        //         if(this.jewels[i][j].color === this.jewels[i-1][j+1].color && this.jewels[i-1][j+1].color === this.jewels[i-2][j+2].color){
+        //             // found 3-in-a-diagonal! (backwards)
+        //             let foundDiagonal = [];
+        //             foundDiagonal.push(this.jewels[i][j]);
+        //             foundDiagonal.push(this.jewels[i-1][j+1]);
+        //             foundDiagonal.push(this.jewels[i-2][j+2]);
+        //             if(!foundRows.includes(foundDiagonal)) {
+        //                 foundRows.push(foundDiagonal);
+        //                 foundKind.push('backwardsDiagonal');
+        //             }
+        //         }
+        //     }
+        // }
 
-        // remove double rows, but not >3-in-a-row
+        // remove double rows (for example row and column with one jewel the same), but not >3-in-a-row
         for(let i = 0; i < 3*foundRows.length; i++){
             for(let j = 0; j < 3*foundRows.length; j++){
                 if(foundRows[Math.floor(i/3)][i%3].color === foundRows[Math.floor(j/3)][j%3].color
@@ -129,18 +178,70 @@ class Grid{
         return foundRows;
     }
 
+    // check if switching makes a row
+    switchMakesRow(clickedJewels){
+        let makesRow = false;
+        // switching
+        const firstColor = clickedJewels[0].color;
+        const secondColor = clickedJewels[1].color;
+        this.jewels[clickedJewels[0].x][clickedJewels[0].y].color = secondColor;
+        this.jewels[clickedJewels[1].x][clickedJewels[1].y].color = firstColor;
+        // check for rows
+        if(this.checkForRow2().length > 0){
+            makesRow = true;
+        }
+        // switch back
+        this.jewels[clickedJewels[0].x][clickedJewels[0].y].color = firstColor;
+        this.jewels[clickedJewels[1].x][clickedJewels[1].y].color = secondColor;
+
+        return makesRow;
+    }
+
+    // check if switch possible, or whether no rows can be made; game over
+    switchPossible(){
+        let switchPossible = false;
+        // row switch
+        for(let j = 0; j < 8; j++){
+            for(let i = 0; i < 7; i++){
+                if(this.switchMakesRow([this.jewels[i][j],this.jewels[i+1][j]])){
+                    switchPossible = true;
+                }
+            }
+        }
+        // column switch
+        for(let i = 0; i < 8; i++){
+            for(let j = 0; j < 7; j++){
+                if(this.switchMakesRow([this.jewels[i][j],this.jewels[i][j+1]])){
+                    switchPossible = true;
+                }
+            }
+        }
+        return switchPossible;
+    }
+
     switchCallback = (jewel) => {
         if(this.clickedJewels.length === 0){
             this.clickedJewels.push(jewel);
+            jewel.clicked();
         }
         if(this.clickedJewels.length === 1){
+
             // only push second click if next to first
             if(((jewel.x === this.clickedJewels[0].x+1 || jewel.x === this.clickedJewels[0].x-1) && jewel.y === this.clickedJewels[0].y)
             ||((jewel.y === this.clickedJewels[0].y+1 || jewel.y === this.clickedJewels[0].y-1) && jewel.x === this.clickedJewels[0].x)){
                 this.clickedJewels.push(jewel);
+                jewel.clicked();
             }
         }
-        if (this.clickedJewels.length === 2) {
+
+        // resetting clicked jewels if wrong move
+        if (this.clickedJewels.length === 2 && !this.switchMakesRow(this.clickedJewels)) {
+            this.clickedJewels[0].unclicked();
+            this.clickedJewels[1].unclicked();
+            this.clickedJewels = [];
+        }
+
+        if (this.clickedJewels.length === 2 && this.switchMakesRow(this.clickedJewels)) {
             // switching
             const firstColor = this.clickedJewels[0].color;
             const secondColor = this.clickedJewels[1].color;
@@ -149,11 +250,13 @@ class Grid{
 
             // displaying
             this.displayAgain();
+            this.clickedJewels[0].unclicked();
+            this.clickedJewels[1].unclicked();
             this.clickedJewels = [];
 
             // instead of while loop (does not work with setTimout)
             const removeAndFill = () => {
-                this.foundRows = this.checkForRow();
+                this.foundRows = this.checkForRow2();
                 if(this.foundRows.length === 0){
                     return;
                 }
@@ -177,7 +280,6 @@ class Grid{
                 }, 1000);
             }
             removeAndFill();
-
         }
     }
 
@@ -187,16 +289,22 @@ class Grid{
         element.parentNode.removeChild(element);
         const gridDiv = this.createGrid();
         document.body.appendChild(gridDiv);
+        // game over
+        if(!this.switchPossible()){
+            console.log('game over');
+            return;
+        }
     }
 
     removeRows(foundRows){
         for(let i = 0; i < foundRows.length; i++){
-            this.jewels[foundRows[i][0].x][foundRows[i][0].y] = new Jewel(foundRows[i][0].x, foundRows[i][0].y, 'empty',this.switchCallback);
-            this.jewels[foundRows[i][1].x][foundRows[i][1].y] = new Jewel(foundRows[i][1].x, foundRows[i][1].y, 'empty',this.switchCallback);
-            this.jewels[foundRows[i][2].x][foundRows[i][2].y] = new Jewel(foundRows[i][2].x, foundRows[i][2].y, 'empty',this.switchCallback);
+            for(let k = 0; k < foundRows[i].length; k++){
+                this.jewels[foundRows[i][k].x][foundRows[i][k].y] = new Jewel(foundRows[i][k].x, foundRows[i][k].y, 'empty',this.switchCallback);
+            }
         }
     }
 
+    // needs work for more than one gap
     fallDown(){
         let firstEmpty = 100;
         let lastEmpty = 100;
@@ -253,6 +361,14 @@ class Jewel{
         this.jewelImg.setAttribute('src', src);
         this.jewelImg.onclick = this.switch;
         return this.jewelImg;
+    }
+
+    clicked(){
+        this.jewelImg.setAttribute('id','clicked');
+    }
+
+    unclicked(){
+        this.jewelImg.setAttribute('id','');
     }
 
     switch = () => {

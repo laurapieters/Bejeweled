@@ -19,3 +19,9 @@ img.jewel:hover {
     border: 1px solid white;
     border-radius: 5px;
 }
+
+#clicked{
+    box-sizing: border-box;
+    border: 1px solid white;
+    border-radius: 5px;
+}
