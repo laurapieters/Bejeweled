@@ -267,7 +267,7 @@ class Grid{
 
                     // move jewels down
                     setTimeout(() => {
-                        this.fallDown();
+                        this.fallDown2();
                         this.displayAgain();
 
                         // generate new jewels
@@ -304,7 +304,25 @@ class Grid{
         }
     }
 
-    // needs work for more than one gap
+    fallDown2(){
+        // iterate over columns
+        for(let i = 0; i < 8; i++) {
+            // inside column
+            for (let j = 7; j >= 0; j--) {
+                if(this.jewels[i][j].color === 'empty'){
+                    for(let k = j-1; k >= 0; k--){
+                        if(this.jewels[i][k].color !== 'empty'){
+                            this.jewels[i][j].color = this.jewels[i][k].color;
+                            this.jewels[i][k].color = 'empty';
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // only works for one gap
     fallDown(){
         let firstEmpty = 100;
         let lastEmpty = 100;
