@@ -6,6 +6,7 @@ function playGame(){
         grid = new Grid();
         length = grid.foundRows.length;
     }
+    grid.sideDisplay();
     let gridDiv = grid.createGrid();
     document.body.appendChild(gridDiv);
 }
@@ -15,6 +16,7 @@ class Grid{
         this.jewels = this.createJewels();
         this.foundRows = this.checkForRow2();
         this.clickedJewels = [];
+        this.score = 0;
     }
 
     createJewels(){
@@ -92,6 +94,7 @@ class Grid{
 
             }
         }
+
         return foundRows;
     }
 
@@ -263,7 +266,20 @@ class Grid{
                 // check for row, remove and display again
                 setTimeout(() => {
                     this.removeRows(this.foundRows);
+                    // score
+                    // to do: add special score for combos
+                    for(let i = 0; i < this.foundRows.length; i++){
+                        if(this.foundRows[i].length === 3){
+                            this.score += 100;
+                        }else if(this.foundRows[i].length === 4){
+                            this.score += 200;
+                        }else if(this.foundRows[i].length === 5){
+                            this.score += 300;
+                        }
+                    }
                     this.displayAgain();
+
+
 
                     // move jewels down
                     setTimeout(() => {
@@ -283,15 +299,48 @@ class Grid{
         }
     }
 
+    sideDisplay(){
+        // title
+        let title = document.createElement('div');
+        title.setAttribute('id', 'title');
+        title.innerHTML = 'BEJEWELED';
+        document.body.appendChild(title);
+
+        // score word
+        let scoreWordDiv = document.createElement('div');
+        scoreWordDiv.setAttribute('id', 'scoreWord');
+        scoreWordDiv.innerHTML = 'score: ';
+        document.body.appendChild(scoreWordDiv);
+
+        // score number
+        let scoreDiv = document.createElement('div');
+        scoreDiv.setAttribute('id', 'score');
+        scoreDiv.innerHTML = this.score;
+        document.body.appendChild(scoreDiv);
+    }
+
     // displays the new configuration
     displayAgain() {
+        // change score
+        const elementScore = document.getElementById('score');
+        elementScore.parentNode.removeChild(elementScore);
+        let scoreDiv = document.createElement('div');
+        scoreDiv.setAttribute('id', 'score');
+        scoreDiv.innerHTML = this.score;
+        document.body.appendChild(scoreDiv);
+
+        // change grid
         const element = document.getElementById('grid');
         element.parentNode.removeChild(element);
         const gridDiv = this.createGrid();
         document.body.appendChild(gridDiv);
+
         // game over
         if(!this.switchPossible()){
-            console.log('game over');
+            let gameOver = document.createElement('div');
+            gameOver.setAttribute('id', 'gameOver');
+            gameOver.innerHTML = 'GAME OVER';
+            document.body.appendChild(gameOver);
             return;
         }
     }
@@ -322,7 +371,7 @@ class Grid{
         }
     }
 
-    // only works for one gap
+    // only works for one gap, not in use anymore
     fallDown(){
         let firstEmpty = 100;
         let lastEmpty = 100;

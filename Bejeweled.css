@@ -1,7 +1,7 @@
 body {
     text-align: center;
     background-color: #281a2b;
-    margin-top: 40px;
+    margin-top: 50px;
 }
 
 * {
@@ -24,4 +24,48 @@ img.jewel:hover {
     box-sizing: border-box;
     border: 1px solid white;
     border-radius: 5px;
+}
+
+#score{
+    color: white;
+    left: 240px;
+    top: 100px;
+    position: absolute;
+    padding: 10px 40px;
+    border-radius: 5px;
+    border: solid white 1px;
+    width: 50px;
+}
+
+#scoreWord{
+    color: white;
+    left: 250px;
+    top: 70px;
+    position: absolute;
+    padding: 10px 40px;
+    font-family: MoolBoran;
+    font-size: 22px;
+}
+
+#title{
+    color: white;
+    text-align: center;
+    margin-top: -30px;
+    font-family: MoolBoran;
+    font-size: 30px;
+}
+
+#gameOver{
+    color: white;
+    margin-top: 50px;
+    left: 560px;
+    top: 210px;
+    position: absolute;
+    padding: 2px 35px;
+    padding-top: 10px;
+    border-radius: 5px;
+    border: solid white 1px;
+    background-color: #281a2b;
+    font-family: MoolBoran;
+    font-size: 25px;
 }
